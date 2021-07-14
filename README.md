@@ -1,2 +1,2 @@
-# f446re-rtc-lcd
-Embedded project using stm32f446re microcontroller connected to RTC and LCD.
+# Stm32f446re with RTC and LCD
+This is an embedded project based on [STM32F446RE](https://www.st.com/en/microcontrollers-microprocessors/stm32f446re.html) microcontroller which uses the [NUCLEO-F446RE](https://www.st.com/en/evaluation-tools/nucleo-f446re.html) board connected to the RTC (Real Time Clock) [DS1307](https://www.maximintegrated.com/en/products/analog/real-time-clocks/DS1307.html) and the LCD (Liquid Crystal Display) [Hitachi HD44780 16x2](https://pdf1.alldatasheet.es/datasheet-pdf/view/63673/HITACHI/HD44780.html).
