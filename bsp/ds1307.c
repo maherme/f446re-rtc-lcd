@@ -100,6 +100,27 @@ uint8_t ds1307_init(void){
 }
 
 void ds1307_set_current_time(RTC_time_t* time){
+
+    uint8_t seconds = 0;
+    uint8_t hours = 0;
+
+    seconds = bin_to_bcd(time->seconds);
+    /* Clear CH bit */
+    seconds &= ~(1 << 7);
+    /* Program seconds value */
+    ds1307_write(seconds, DS1307_ADDR_SEC);
+    /* Program minutes value */
+    ds1307_write(bin_to_bcd(time->minutes), DS1307_ADDR_MIN);
+    /* Program hours value */
+    hours = bin_to_bcd(time->hours);
+    if(time->time_format == T_FORMAT_24HRS){
+        hours &= ~(1 << 6);
+    }
+    else{
+        hours |= (1 << 6);
+        hours = (time->time_format == T_FORMAT_12HRS_PM) ? hours | (1 << 5) : hours & ~(1 << 5);
+    }
+    ds1307_write(hours, DS1307_ADDR_HRS);
 }
 
 void ds1307_get_current_time(RTC_time_t* time){

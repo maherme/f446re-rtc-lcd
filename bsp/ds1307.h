@@ -35,7 +35,7 @@
  * Register addresses.
  */
 #define DS1307_ADDR_SEC     0x00
-#define DS1307_ADDR_MIC     0x01
+#define DS1307_ADDR_MIN     0x01
 #define DS1307_ADDR_HRS     0x02
 #define DS1307_ADDR_DAY     0x03
 #define DS1307_ADDR_DATE    0x04
