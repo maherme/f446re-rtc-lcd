@@ -98,7 +98,7 @@ typedef struct
  *
  * @param[in] void
  *
- * @return TBC
+ * @return CH bit value, if return = 1, init fails, if return = 0, init sucess.
  */
 uint8_t ds1307_init(void);
 

@@ -50,11 +50,36 @@ static void ds1307_i2c_pin_cfg(void);
  */
 static void ds1307_i2c_cfg(void);
 
+/**
+ * @fn ds1307_write
+ *
+ * @brief helper function to write the register of DS1307 device.
+ *
+ * @param[in] value is the value to be stored in the register
+ * @param[in] reg_addr is the value of the register address.
+ *
+ * @return void.
+ */
+static void ds1307_write(uint8_t value, uint8_t reg_addr);
+
+/**
+ * @fn ds1307_read
+ *
+ * @brief helper function to read the register of DS1307 device.
+ *
+ * @param[in] reg_addr is the value of the register address.
+ *
+ * @return value of the register.
+ */
+static uint8_t ds1307_read(uint8_t reg_addr);
+
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
 /*****************************************************************************************************/
 
 uint8_t ds1307_init(void){
+
+    uint8_t clock_state = 0;
 
     /* Initialize the I2C pins */
     ds1307_i2c_pin_cfg();
@@ -62,7 +87,16 @@ uint8_t ds1307_init(void){
     /* Initialize the I2C peripheral */
     ds1307_i2c_cfg();
 
-    return 0;
+    /* Enable the I2C peripheral */
+    I2C_Enable(DS1307_I2C ,ENABLE);
+
+    /* Make clock halt = 0 */
+    ds1307_write(0x00, DS1307_ADDR_SEC);
+
+    /* Read back clock halt bit */
+    clock_state = ds1307_read(DS1307_ADDR_SEC);
+
+    return ((clock_state >> 7) & 0x01);
 }
 
 void ds1307_set_current_time(RTC_time_t* time){
@@ -116,4 +150,24 @@ static void ds1307_i2c_cfg(void){
     ds1307_I2CHandle.I2C_Config.I2C_SCLSpeed = DS1307_I2C_SPEED;
 
     I2C_Init(&ds1307_I2CHandle);
+}
+
+static void ds1307_write(uint8_t value, uint8_t reg_addr){
+
+    uint8_t tx[2] = {0};
+
+    tx[0] = reg_addr;
+    tx[1] = value;
+
+    I2C_MasterSendData(&ds1307_I2CHandle, tx, sizeof(tx), DS1307_I2C_ADDR, I2C_DISABLE_SR);
+}
+
+static uint8_t ds1307_read(uint8_t reg_addr){
+
+    uint8_t data = 0;
+
+    I2C_MasterSendData(&ds1307_I2CHandle, &reg_addr, 1, DS1307_I2C_ADDR, I2C_DISABLE_SR);
+    I2C_MasterReceiveData(&ds1307_I2CHandle, &data, 1, DS1307_I2C_ADDR, I2C_DISABLE_SR);
+
+    return data;
 }
