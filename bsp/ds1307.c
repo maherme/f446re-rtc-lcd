@@ -152,7 +152,7 @@ void ds1307_get_current_time(RTC_time_t* time){
 
     /* Get seconds */
     seconds = ds1307_read(DS1307_ADDR_SEC);
-    seconds &= (1 << 7);
+    seconds &= ~(1 << 7);
     time->seconds = bcd_to_bin(seconds);
     /* Get minutes */
     time->minutes = bcd_to_bin(ds1307_read(DS1307_ADDR_MIN));
