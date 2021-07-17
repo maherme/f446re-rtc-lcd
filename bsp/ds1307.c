@@ -84,6 +84,17 @@ static uint8_t ds1307_read(uint8_t reg_addr);
  */
 static uint8_t bin_to_bcd(uint8_t value);
 
+/**
+ * @fn bcd_to_bin
+ *
+ * @brief function to convert a number in bcd format to binary format.
+ *
+ * @param[in] value is the number in bcd format.
+ *
+ * @return value in binary format.
+ */
+static uint8_t bcd_to_bin(uint8_t value);
+
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
 /*****************************************************************************************************/
@@ -260,4 +271,15 @@ static uint8_t bin_to_bcd(uint8_t value){
     }
 
     return bcd;
+}
+
+static uint8_t bcd_to_bin(uint8_t value){
+
+    uint8_t m = 0;
+    uint8_t n = 0;
+
+    m = (uint8_t)((value >> 4) * 10);
+    n = value & (uint8_t)0x0F;
+
+    return (m + n);
 }
