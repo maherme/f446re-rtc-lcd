@@ -162,6 +162,15 @@ void ds1307_set_current_date(RTC_date_t* date){
 }
 
 void ds1307_get_current_date(RTC_date_t* date){
+
+    /* Get day */
+    date->day = bcd_to_bin(ds1307_read(DS1307_ADDR_DAY));
+    /* Get month */
+    date->month = bcd_to_bin(ds1307_read(DS1307_ADDR_MONTH));
+    /* Get year */
+    date->year = bcd_to_bin(ds1307_read(DS1307_ADDR_YEAR));
+    /* Get date */
+    date->date = bcd_to_bin(ds1307_read(DS1307_ADDR_DATE));
 }
 
 /*****************************************************************************************************/
