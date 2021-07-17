@@ -73,6 +73,17 @@ static void ds1307_write(uint8_t value, uint8_t reg_addr);
  */
 static uint8_t ds1307_read(uint8_t reg_addr);
 
+/**
+ * @fn bin_to_bcd
+ *
+ * @brief function to convert a number in binary format to bcd format.
+ *
+ * @param[in] value is the number in binary format.
+ *
+ * @return value in bcd format.
+ */
+static uint8_t bin_to_bcd(uint8_t value);
+
 /*****************************************************************************************************/
 /*                                       Public API Definitions                                      */
 /*****************************************************************************************************/
@@ -232,4 +243,21 @@ static uint8_t ds1307_read(uint8_t reg_addr){
     I2C_MasterReceiveData(&ds1307_I2CHandle, &data, 1, DS1307_I2C_ADDR, I2C_DISABLE_SR);
 
     return data;
+}
+
+static uint8_t bin_to_bcd(uint8_t value){
+
+    uint8_t m = 0;
+    uint8_t n = 0;
+    uint8_t bcd = 0;
+
+    bcd = value;
+
+    if(value >= 10){
+        m = value / 10;
+        n = value % 10;
+        bcd = (uint8_t)((m << 4) | n);
+    }
+
+    return bcd;
 }
