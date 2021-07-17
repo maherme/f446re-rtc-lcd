@@ -124,9 +124,41 @@ void ds1307_set_current_time(RTC_time_t* time){
 }
 
 void ds1307_get_current_time(RTC_time_t* time){
+
+    uint8_t seconds = 0;
+    uint8_t hours = 0;
+
+    /* Get seconds */
+    seconds = ds1307_read(DS1307_ADDR_SEC);
+    seconds &= (1 << 7);
+    time->seconds = bcd_to_bin(seconds);
+    /* Get minutes */
+    time->minutes = bcd_to_bin(ds1307_read(DS1307_ADDR_MIN));
+    /* Get hours */
+    hours = ds1307_read(DS1307_ADDR_HRS);
+    if(hours & (1 << 6)){
+        /* 12 hrs format */
+        time->time_format = !((hours & (1 << 5)) == 0);
+        /* Clear bits 5 and 6 */
+        hours &= ~(0x03 << 5);
+    }
+    else{
+        /* 24 hrs format */
+        time->time_format = T_FORMAT_24HRS;
+    }
+    time->hours = bcd_to_bin(hours);
 }
 
 void ds1307_set_current_date(RTC_date_t* date){
+
+    /* Set date register */
+    ds1307_write(bin_to_bcd(date->date), DS1307_ADDR_DATE);
+    /* Set month register */
+    ds1307_write(bin_to_bcd(date->month), DS1307_ADDR_MONTH);
+    /* Set year register */
+    ds1307_write(bin_to_bcd(date->year), DS1307_ADDR_YEAR);
+    /* Set day register */
+    ds1307_write(bin_to_bcd(date->day), DS1307_ADDR_DAY);
 }
 
 void ds1307_get_current_date(RTC_date_t* date){
