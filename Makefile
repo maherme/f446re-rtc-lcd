@@ -9,10 +9,12 @@ BLD_DIR = ./build
 OBJS1 = $(OBJ_DIR)/startup.o \
 		$(OBJ_DIR)/syscalls.o \
 		$(OBJ_DIR)/main.o \
-		$(OBJ_DIR)/ds1307.o
+		$(OBJ_DIR)/ds1307.o \
+		$(OBJ_DIR)/hd44780.o
 OBJS2 = $(OBJ_DIR)/startup.o \
 		$(OBJ_DIR)/main.o \
-		$(OBJ_DIR)/ds1307.o
+		$(OBJ_DIR)/ds1307.o \
+		$(OBJ_DIR)/hd44780.o
 LIBS = -lstm32f446xx
 
 CC = arm-none-eabi-gcc
