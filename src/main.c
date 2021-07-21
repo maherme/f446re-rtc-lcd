@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include "ds1307.h"
+#include "hd44780.h"
 
 #define SYSTICK_TIM_CLK     16000000UL
 
@@ -147,6 +148,10 @@ int main(void){
     initialise_monitor_handles();
 
     printf("Starting program!!!\n");
+
+    hd44780_init();
+
+    hd44780_print_string("RTC Test ...");
 
     if(ds1307_init()){
         printf("RTC init failed, please reset manually\n");
