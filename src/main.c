@@ -26,7 +26,7 @@ extern void initialise_monitor_handles(void);
  */
 static char* get_day_week(uint8_t day){
 
-    char* days[] = {"Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
+    char* days[] = {"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"};
 
     return days[day-1];
 }
@@ -139,6 +139,22 @@ static void init_systick_timer(uint32_t tick_hz){
     *pSCSR |= (1 << 0);
 }
 
+/**
+ * @fn mdelay
+ *
+ * @brief function to count a number of miliseconds.
+ *
+ * @param[in] cnt is the number of miliseconds.
+ *
+ * @return void.
+ */
+static void mdelay(uint32_t cnt){
+
+    uint32_t i = 0;
+
+    for(i = 0; i < (cnt * 1000); i++);
+}
+
 int main(void){
 
     RTC_time_t current_time;
@@ -152,6 +168,11 @@ int main(void){
     hd44780_init();
 
     hd44780_print_string("RTC Test ...");
+
+    mdelay(2000); /* Set a delay before clean the LCD screen */
+
+    hd44780_display_clear();
+    hd44780_display_return_home();
 
     if(ds1307_init()){
         printf("RTC init failed, please reset manually\n");
@@ -185,13 +206,22 @@ int main(void){
     if(current_time.time_format != T_FORMAT_24HRS){
         am_pm = current_time.time_format ? "PM" : "AM";
         printf("Current time: %s %s\n", time_to_str(&current_time), am_pm); /* Format hh:mm:ss <A/P>M */
+        hd44780_print_string(time_to_str(&current_time));
+        hd44780_print_char(' ');
+        hd44780_print_string(am_pm);
     }
     else{
         printf("Current time: %s\n", time_to_str(&current_time)); /* Format hh:mm:ss */
+        hd44780_print_string(time_to_str(&current_time));
     }
 
     /* Print date */
     printf("Current date: %s <%s>\n", date_to_str(&current_date), get_day_week(current_date.day));
+    hd44780_set_cursor(2, 1); /* Change to 2 row before print date in LCD */
+    hd44780_print_string(date_to_str(&current_date));
+    hd44780_print_char('<');
+    hd44780_print_string(get_day_week(current_date.day));
+    hd44780_print_char('>');
 
     for(;;){
     }
@@ -211,13 +241,23 @@ void Systick_Handler(void){
     if(current_time.time_format != T_FORMAT_24HRS){
         am_pm = current_time.time_format ? "PM" : "AM";
         printf("Current time: %s %s\n", time_to_str(&current_time), am_pm); /* Format hh:mm:ss <A/P>M */
+        hd44780_set_cursor(1, 1); /* Change to 1 row before print time in LCD */
+        hd44780_print_string(time_to_str(&current_time));
+        hd44780_print_char(' ');
+        hd44780_print_string(am_pm);
     }
     else{
         printf("Current time: %s\n", time_to_str(&current_time)); /* Format hh:mm:ss */
+        hd44780_print_string(time_to_str(&current_time));
     }
 
     /* Get date */
     ds1307_get_current_date(&current_date);
     /* Print date */
     printf("Current date: %s <%s>\n", date_to_str(&current_date), get_day_week(current_date.day));
+    hd44780_set_cursor(2, 1); /* Change to 2 row before print date in LCD */
+    hd44780_print_string(date_to_str(&current_date));
+    hd44780_print_char('<');
+    hd44780_print_string(get_day_week(current_date.day));
+    hd44780_print_char('>');
 }

@@ -12,6 +12,7 @@
 *       void    hd44780_print_string(char* msg)
 *       void    hd44780_display_return_home(void)
 *       void    hd44780_set_cursor(uint8_t row, uint8_t column)
+*       void    hd44780_display_clear(void)
 *
 * NOTES :
 *       For further information about functions refer to the corresponding header file.
@@ -49,17 +50,6 @@ static void write_4_bits(uint8_t value);
  * @return void.
  */
 static void hd44780_enable(void);
-
-/**
- * @fn hd44780_display_clear
- *
- * @brief function to clear the display of the HD44780 device.
- *
- * @param[in] void.
- *
- * @return void.
- */
-static void hd44780_display_clear(void);
 
 /**
  * @fn mdelay
@@ -153,8 +143,8 @@ void hd44780_init(void){
     /* Set command */
     hd44780_send_command(HD44780_CMD_4DL_2N_5X8F);
 
-    /* Display ON and cursor ON */
-    hd44780_send_command(HD44780_CMD_DON_CURON);
+    /* Display ON and cursor OFF */
+    hd44780_send_command(HD44780_CMD_DON_CUROFF);
 
     /* Display clear */
     hd44780_display_clear();
@@ -227,6 +217,15 @@ void hd44780_set_cursor(uint8_t row, uint8_t column){
     }
 }
 
+void hd44780_display_clear(void){
+
+    /* Send display clear command */
+    hd44780_send_command(HD44780_CMD_DIS_CLEAR);
+
+    /* Wait */
+    mdelay(2);
+}
+
 /*****************************************************************************************************/
 /*                                       Static Function Definitions                                 */
 /*****************************************************************************************************/
@@ -247,15 +246,6 @@ static void hd44780_enable(void){
     udelay(10);
     GPIO_WriteToOutputPin(HD44780_GPIO_PORT, HD44780_GPIO_EN, GPIO_PIN_RESET);
     udelay(100);
-}
-
-static void hd44780_display_clear(void){
-
-    /* Send display clear command */
-    hd44780_send_command(HD44780_CMD_DIS_CLEAR);
-
-    /* Wait */
-    mdelay(2);
 }
 
 static void mdelay(uint32_t cnt){
