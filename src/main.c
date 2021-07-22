@@ -114,29 +114,29 @@ static char* date_to_str(RTC_date_t* date){
  * @param[in] frequency in Hz.
  *
  * @return void.
+ *
+ * @note: this is a CPU peripheral, so you need to refer to Cortex-M4 manual for further information.
  */
 static void init_systick_timer(uint32_t tick_hz){
 
     uint32_t count_value = 0;
-    uint32_t* pSRVR = (uint32_t*)0xE000E014;
-    uint32_t* pSCSR = (uint32_t*)0xE000E010;
+    uint32_t* pSTK_LOAD = (uint32_t*)0xE000E014;
+    uint32_t* pSTK_CTRL = (uint32_t*)0xE000E010;
 
     /* Calculation of reload value */
     count_value = (SYSTICK_TIM_CLK / tick_hz) - 1;
 
     /* Clear the value of SVR */
-    *pSRVR &= ~(0xFFFFFFFF);
-
+    *pSTK_LOAD &= ~(0x00FFFFFF);
     /* Load the value into SVR */
-    *pSRVR |= count_value;
+    *pSTK_LOAD |= count_value;
 
     /* Enable systick exception request */
-    *pSCSR |= (1 << 1);
+    *pSTK_CTRL |= (1 << 1);
     /* Indicate clock source, processor clock source */
-    *pSCSR |= (1 << 2);
-
+    *pSTK_CTRL |= (1 << 2);
     /* Enable the systick */
-    *pSCSR |= (1 << 0);
+    *pSTK_CTRL |= (1 << 0);
 }
 
 /**
