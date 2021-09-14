@@ -24,3 +24,6 @@ Remember you must enable semihosting in the telnet session if you compile the pr
 ```console
 arm semihosting enable
 ```
+## System
+The connections between RTC, LCD and nucleo board is as follow:
+![Alt text](/doc/nucleo-rtc-lcd.png)
